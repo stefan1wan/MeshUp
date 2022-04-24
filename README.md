@@ -59,9 +59,10 @@ If we access the cachelines in the above EV set, cachelines will be evicted from
 <img src="./pics/Mapping.png" style="zoom:60%" />
 
 Code is [here](./L2-LLC_evict_probe/).
-### RSA target
+### Target
 TBD
-### Analysis
+### Inference
 TBD
+
 ## Cross-CPU Attack
 [Here](https://github.com/GlareR/MeshUp) is the cross-CPU attack details upon UPI.

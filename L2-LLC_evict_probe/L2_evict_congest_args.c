@@ -2,20 +2,19 @@
 #include <dlfcn.h>
 #include "utils_op.h"
 
-//104机器的信息
+// CHA-Core MAP of this machine
 int CHA_CPU_LIST[NUM_CHA_USED][2] = {{0,0},{1,12},{2,6},{3,18},{4,1},{5,13},{6,7},{7,19},{8,2},{9,14},{10,8},{11,20},{12,3},{13,15},{14,9},{15,21},{16,4},{17,16},{18,10},{19,22},{20,5},{21,17},{22,11},{23,23}};
 
 #define FLOW_MAKE_PAIR_NUM 2
 #define TARGET_NUM 0 // In this experiment, the target is java;
 
 uint64_t L2_INDEX_LIST[L2_INDEX_NUM]; //= {0x2a7,0x2a8,0xa9,0x2aa,0x0a1,0x1b2,0xc2,0xde,0x2ef,0xf0};
-int FLOW_MADE_LIST[FLOW_MAKE_PAIR_NUM][2];  // = {{11,21},{21,11}};
+int FLOW_MADE_LIST[FLOW_MAKE_PAIR_NUM][2];  
 int TARGET_LIST[TARGET_NUM][2] = {{4, 22}};
 
 void log_local(thread_args *thread_args_list);
 
 int main(int argc, char *argv[]){
-// 0.0 检查变量
     if(argc < 5){
         printf("Usage: ./L2_evict_congest_args [core pair list]\n");
         exit(0);
@@ -177,20 +176,6 @@ int main(int argc, char *argv[]){
         TARGET_FUNC_POINTER[i] = Compile_Load_SO(TARGET_H_list[i], source_filename, target_filename, func_name);
     }
 
-// 6.1 准备记录PMON读数;
-    // int fd;
-    // uint64_t msr_val, msr_num;
-    // // 通过msr控制ctrl
-    // fd = prepare_msr();
-    // // 记录cha;
-    // // ------------------- read the origin values of the CHA mesh counters ----------------
-    // for (int tile=0; tile<NUM_CHA_USED; tile++) {
-    //     for (int counter=0; counter<4; counter++) {
-    //         msr_num = 0xe00 + 0x10*tile + 0x8 + counter;
-    //         pread(fd,&msr_val,sizeof(msr_val),msr_num);
-    //         cha_counts[tile][counter][0] = msr_val;
-    //     }
-    // }
 
 // 4. 流量的制造
     uint64_t TIME_5, TIME_6;
@@ -211,20 +196,6 @@ int main(int argc, char *argv[]){
         pthread_join(target_thread_id_list[i], NULL);
     TIME_6 = rdtscp();
 
-    // for(int i=0; i<FLOW_MAKE_PAIR_NUM; i++){
-    //     //dlclose(H_list[i]);
-    //     //dlerror();
-    // }
-
-// 6.2 ------------------- read the final values of the CHA mesh counters ----------------
-    // for (int tile=0; tile<NUM_CHA_USED; tile++) {
-    //     for (int counter=0; counter<4; counter++) {
-    //         msr_num = 0xe00 + 0x10*tile + 0x8 + counter;
-    //         pread(fd,&msr_val,sizeof(msr_val),msr_num);
-    //         cha_counts[tile][counter][1] = msr_val;
-    //     }
-    // }
-    // print_cha_counters();
 
 // 统计工作时间
     uint64_t cycles = TIME_6 - TIME_5;
