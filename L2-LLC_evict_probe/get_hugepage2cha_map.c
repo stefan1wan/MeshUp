@@ -1,15 +1,12 @@
 #include "utils_calc.h"
 
 extern unsigned long long get_pagemap_entry( void * va );
-// 给定一个cacheline_确定它映射的CHA
 int find_cha_by_cacheline(uint64_t page_number, uint64_t line_number, double*array, int8_t cha_by_page[NUM_CHA_USED][Lines_per_PAGE], uint64_t*paddr_by_page, int fd, double* globalsum);
-// 准备cha的msr
 int prapare_cha_ctr_reg();
 
 
 void hugepage2cha(double*array, uint64_t len, double**page_pointers, int8_t cha_by_page[NUM_CHA_USED][Lines_per_PAGE], uint64_t*paddr_by_page){
 
-    // 初始化所有cache_line的记录
     for(uint64_t page_number =0; page_number < NUMPAGES; page_number++)
         for(uint64_t line_number=0; line_number < Lines_per_PAGE; line_number++)
             cha_by_page[page_number][line_number] = -1;
@@ -174,7 +171,7 @@ int find_cha_by_cacheline(uint64_t page_number, uint64_t line_number, double*arr
         min_count = 1<<30;
         sum_count = 0;
 
-        // 记下哪个CHA访问LLC最多和最少  把前后差值加起来
+
         for (int tile=0; tile<NUM_CHA_USED; tile++) {
             max_count = MAX(max_count, cha_counts[tile][1][1]-cha_counts[tile][1][0]);
             min_count = MIN(min_count, cha_counts[tile][1][1]-cha_counts[tile][1][0]);
@@ -216,7 +213,7 @@ int find_cha_by_cacheline(uint64_t page_number, uint64_t line_number, double*arr
         }
 
         if(found == 0){
-            good_old = 0; // 检查最大值是否合理
+            good_old = 0;
             if(VERBOSE){
                 printf("WARNING: no CHA entry has been found for line %ld!\n",line_number);
                 printf("DEBUG dump for no CHA found\n");

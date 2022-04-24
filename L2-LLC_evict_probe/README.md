@@ -27,6 +27,8 @@ echo 1024 > /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages
 make
 ./calc_map 
 ```
+Some code of this part are from [SKX-SF-Conflicts](https://github.com/jdmccalpin/SKX-SF-Conflicts/blob/master/SF_test_offsets.c).
+
 ##### Run Java RSA target
 ```
 cd RSA-Target-JVM

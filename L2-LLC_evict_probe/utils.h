@@ -48,18 +48,13 @@
 #define MIN(x,y) ((x)<(y)?(x):(y))
 #define MAX(x,y) ((x)>(y)?(x):(y))
 
-// 4096bit 采样
-//#define EXCHAGE_RATE 5000000*30 //5000000//10000000 // 先跑它两个亿 // 5000000*60在4096的情况下可以测试20次+
-//#define EXCHAGE_RATE 10000000000
 #define EXCHAGE_RATE 5000000
-#define CACHELINES_READ 24 //标准 24 // 每次读取每个index的多少个cacheline
-//#define L2_INDEX_NUM 10
+#define CACHELINES_READ 24 
 #define L2_INDEX_NUM 10
 
 #define VERBOSE 0
 #define VERBOSE2 0
 
-// 104机器
 #define CPU_FREQ 2300000000.0
 
 typedef struct
@@ -78,25 +73,24 @@ static inline uint64_t rdtscp(){
 }
 
 void attach_cpu(int cpu){
-  cpu_set_t mask;  //CPU核的集合
-  cpu_set_t get;   //获取在集合中的CPU
+  cpu_set_t mask; 
+  cpu_set_t get;  
   int num=96;
-  CPU_ZERO(&mask);    //置空
-  //CPU_SET(id, &mask);   //设置亲和力值
+  CPU_ZERO(&mask);  
   CPU_SET(cpu, &mask);
-  if (sched_setaffinity(0, sizeof(mask), &mask) == -1)//设置线程CPU亲和力
+  if (sched_setaffinity(0, sizeof(mask), &mask) == -1)
   {
      printf("warning: could not set CPU affinity, continuing...\n");
   }
 
   CPU_ZERO(&get);
-  if (sched_getaffinity(0, sizeof(get), &get) == -1)//获取线程CPU亲和力
+  if (sched_getaffinity(0, sizeof(get), &get) == -1)
   {
       printf("warning: cound not get thread affinity, continuing...\n");
   }
   for(int i=0; i< num; i++){
-    if(CPU_ISSET(i, &get))//判断线程与哪个CPU有亲和力
-         printf("this thread is running on  processor : %d\n",i);
+    if(CPU_ISSET(i, &get))
+      printf("this thread is running on  processor : %d\n",i);
   }
 
 }

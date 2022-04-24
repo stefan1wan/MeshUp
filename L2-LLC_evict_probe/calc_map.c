@@ -10,18 +10,16 @@ static inline uint64_t rdtscp(){
 	return (rdx << 32) | rax;
 }
 
-
-// 定义变量
-double * page_pointers[NUMPAGES];        // 每个大页的虚拟地址
-uint64_t paddr_by_page[NUMPAGES];        //大页的物理地址
+double * page_pointers[NUMPAGES]; 
+uint64_t paddr_by_page[NUMPAGES];
 int8_t cha_by_page[NUMPAGES][Lines_per_PAGE];  // L3 numbers for each of the 32,768 cache lines in each of the first PAGES_MAPPED 2MiB pages
-// uint64_t cachelines_by_cha[NUM_CHA_USED][NUMPAGES* Lines_per_PAGE]; //能cache到每个cha的地址
+// uint64_t cachelines_by_cha[NUM_CHA_USED][NUMPAGES* Lines_per_PAGE];
 
-uint64_t** cachelines_by_cha_phy; // 物理地址
+uint64_t** cachelines_by_cha_phy; 
 uint64_t* cacheline_nums_of_cha;
 
 int main(){
-// 1. map 2G(1024*2M)的大页 并写1初始化, 初始化msr
+
     uint64_t TIME_1 = rdtscp();
     uint64_t len = NUMPAGES * MYPAGESIZE;
     double* array = (double*)  mmap(NULL, len, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE | MAP_HUGETLB | MAP_HUGE_1GB, -1, 0 );
@@ -37,12 +35,11 @@ int main(){
     uint64_t TIME_2 = rdtscp();
     printf("Map Hugepage(s): %lf\n",(TIME_2-TIME_1)/CPU_FREQ);
 
-// 2. 分析得到映射情况, 生成映射表
+
     hugepage2cha(array,len, page_pointers, cha_by_page, paddr_by_page);
     uint64_t TIME_3 = rdtscp();
     printf("Calc HUGEPAGE<->CHA (s): %lf\n",(TIME_3-TIME_2)/CPU_FREQ);
 
-// 3. 映射到每个cha的虚拟地址(self)
     cachelines_by_cha_phy = (uint64_t**)malloc(NUM_CHA_USED * sizeof(uint64_t*));
 
     for(int i=0; i<NUM_CHA_USED; i++){
@@ -55,25 +52,21 @@ int main(){
     }
     cacheline_nums_of_cha = (uint64_t*)malloc(NUM_CHA_USED*sizeof(uint64_t));
     memset(cacheline_nums_of_cha, '\x00', NUM_CHA_USED*sizeof(uint64_t));
-   
+
     for(uint64_t page_number = 0; page_number < NUMPAGES; page_number++){
         for(uint64_t line_number=0; line_number < Lines_per_PAGE; line_number++){
 
             int cha = cha_by_page[page_number][line_number];
             int current = cacheline_nums_of_cha[cha];
 
-            // 使用2得到的大页虚拟地址和物理地址
-            //uint64_t vitual_memory =   (uint64_t)(page_pointers[page_number]) + line_number*64;
             uint64_t physical_memory = paddr_by_page[page_number] + line_number*0x40 ;
-            // printf("vitual:%lx\n", vitual_memory);
-            //cachelines_by_cha[cha][current] =  vitual_memory;
+
             cachelines_by_cha_phy[cha][current] = physical_memory;
             
             cacheline_nums_of_cha[cha]++;
         }
     }
 
-    //show vitual addr by cha;
     if(VERBOSE2){
         for(int i=0; i<NUM_CHA_USED; i++){
             int length = cacheline_nums_of_cha[i];
@@ -88,7 +81,6 @@ int main(){
     uint64_t TIME_4 = rdtscp();
     printf("Get CHA<->CACHELINE (s): %lf\n",(TIME_4-TIME_3)/CPU_FREQ);
 
-// 4. write to file
     for(int i=0; i<NUM_CHA_USED; i++){
         char cha_name[24];
         sprintf(cha_name,"./phy_addr_by_cha/cha%d",i);

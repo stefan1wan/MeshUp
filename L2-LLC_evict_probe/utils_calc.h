@@ -48,7 +48,6 @@
 #define NUM_CHA_BOXES 28
 #define NUMPAGES 1L
 #define MYPAGESIZE 1073741824UL
-//#define MYPAGESIZE 1024UL
 
 #define NUM_SOCKETS 2
 #define NUM_IMC_CHANNELS 6
@@ -56,16 +55,14 @@
 #define CORES_USED 24
 
 #define Lines_per_PAGE 16777216
-//#define Lines_per_PAGE 16
 #define NFLUSHES 10
 
 #define MIN(x,y) ((x)<(y)?(x):(y))
 #define MAX(x,y) ((x)>(y)?(x):(y))
 
-#define EXCHAGE_RATE 100000000 // 先跑它两个亿
+#define EXCHAGE_RATE 100000000
 
 #define VERBOSE 0
 #define VERBOSE2 0
 
-// 104机器
 #define CPU_FREQ 2300000000.0

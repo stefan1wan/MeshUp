@@ -17,7 +17,6 @@ void* target_%d(void* param){
         // 2, 1000, about 2.5us, not distinguishable yet
         if(i%10==0){
             for(volatile int j=0; j<5000; j++);
-            //usleep(10);
         }
         else{
             FETCH_CACHELINE(i)
