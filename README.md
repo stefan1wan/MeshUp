@@ -44,7 +44,6 @@ We also need the relationships between core ID(core ID is the physical core ID i
 
 Code is [here](./MeshReverseEngineering/).
 
-[Where did we find the configurations?](./Configurations.md)
 
 ## Cross-Core Attack
 ### L2-LLC evict probe
@@ -59,10 +58,6 @@ If we access the cachelines in the above EV set, cachelines will be evicted from
 <img src="./pics/Mapping.png" style="zoom:60%" />
 
 Code is [here](./L2-LLC_evict_probe/).
-### Target
-TBD
-### Inference
-TBD
 
 ## Cross-CPU Attack
 [Here](https://github.com/GlareR/MeshUp) is the cross-CPU attack details upon UPI.
